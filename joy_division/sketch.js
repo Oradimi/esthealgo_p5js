@@ -3,7 +3,7 @@
 /* Pseudo-code rédigé
 Pour chaque ligne, et sur la longueur de la ligne,
 si x est proche du milieu, une dessine une somme de sin et cos de x, multipliée par une valeur haute.
-Sinon, on fait une somme de sin et cos de x, multiplié par une valeur très basse.
+Sinon, on utilise du perlin noise utilisant du cos et du sin, multiplié par une valeur très basse.
 À la fin, on colore chaque dessous de ligne en noir.
 */
 
@@ -12,9 +12,9 @@ Pour n allant de 0 à nombre_de_lignes
     Pour x allant de 0 à largeur_de_feuille
         Si x étant entre valeur aléatoire proche du milieu gauche
         et valeur aléatoire proche du milieu droite
-            somme de sin et cos de x, multiplié par une valeur haute
+            utilisation de perlin noise utilisant du cos et du sin, multiplié par une valeur haute
         Sinon
-            somme de sin et cos de x, multiplié par une valeur très basse
+            utilisation de perlin noise utilisant du cos et du sin, multiplié par une valeur très basse
     Fin Pour
     Colorer le dessous de la ligne en noir
 Fin Pour
@@ -42,59 +42,6 @@ function setup() {
   frameRate(0);
   background(0);
 
-  let margin = height * 0.1;
-  let espaceLigne = (height - margin * 2) / (nombreLigne + 1);
-  let startChange = (width / 2) - (longueur / 2);
-  let endChange = (width / 2) + (longueur / 2);
-  let hauteur = margin + espaceLigne * 4;
-
-  for(let j = 0; j < nombreLigne; j++) {
-    variation = getRandomInt(50, 70);
-    hauteur = hauteur + espaceLigne;
-    let ligneUnique = random() * width;
-    let boost = 0;
-    let ajout = variation / dureeTransition;
-    for (let x = -width; x < width * 2; x++) {
-      if (x > startChange - ligneUnique && x < endChange - ligneUnique) {
-        boost = variation;
-      }
-      else if (x > startChange - ligneUnique - dureeTransition && x < startChange - ligneUnique) {
-        if (boost < variation) {
-          boost = boost + ajout;
-        }
-      }
-      else if (x > endChange - ligneUnique && x < endChange - ligneUnique + dureeTransition) {
-        if (boost > boostSetup) {
-          boost = boost - ajout;
-        }
-      }
-      else if (x < startChange - ligneUnique - dureeTransition || x > endChange - ligneUnique + dureeTransition) {
-        boost = boostSetup;
-      }
-      let noiseVal = noise(x * noiseScale, noiseScale);
-      let scale = -noiseVal * boost;
-      strokeWeight(strokeW);
-      stroke(255);
-      line(x + ligneUnique, hauteur + scale, x + ligneUnique, hauteur + scale + 2);
-      strokeWeight(strokeW);
-      stroke(0);
-      line(x + ligneUnique, height, x + ligneUnique, hauteur + scale + 2);
-    }
-  }
-  fill(0);
-  noStroke();
-  rect(0, 0, width / 8, height);
-  rect(width, 0, -width / 8, height);
-  textAlign(CENTER);
-  textFont(univers);
-  fill(255);
-  textSize(120);
-  text("JOY DIVISION", width / 2, margin);
-  textSize(72);
-  text("UNKNOWN PLEASURES", width / 2, height * 0.99);
-}
-
-function draw() {
   let margin = height * 0.1;
   let espaceLigne = (height - margin * 2) / (nombreLigne + 1);
   let startChange = (width / 2) - (longueur / 2);
@@ -145,4 +92,7 @@ function draw() {
   text("JOY DIVISION", width / 2, margin);
   textSize(72);
   text("UNKNOWN PLEASURES", width / 2, height * 0.99);
+}
+
+function draw() {
 }
