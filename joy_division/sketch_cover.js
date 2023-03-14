@@ -25,61 +25,36 @@ function getRandomInt(min, max) {
   return Math.floor(min + Math.random() * max);
 }
 
-const nombreLigne = 20;
-const longueur = 100;
-const dureeTransition = 80;
-const nbPoints = 3;
+const nombreLigne = 80;
+const longueur = 150;
+let variation = 50;
+const dureeTransition = 160;
 const noiseScale = 0.02;
-const boostSetup = 0;
+const boostSetup = 4;
 const strokeW = 2;
-const micPower = 1000;
-
-let variation;
-let mic;
-let volume;
 
 function preload() {
   univers = loadFont('Univers-light-normal.ttf');
 }
 
-
-
 function setup() {
-  createCanvas(500, 600); //width/2 = 512.55
-  frameRate(60);
+  createCanvas(1000, 1200); //width/2 = 512.5
+  frameRate(0);
   background(0);
 
-  mic = new p5.AudioIn();
-  mic.start();
-}
-
-function draw() {
-  background(0);
-  volume = mic.getLevel() * micPower;
-
-  let margin = 60;
+  let margin = height * 0.1;
   let espaceLigne = (height - margin * 2) / (nombreLigne + 1);
   let startChange = (width / 2) - (longueur / 2);
-  //let startChange = 100;
   let endChange = (width / 2) + (longueur / 2);
-  let hauteur = margin * 1.4;
+  let hauteur = margin + espaceLigne * 4;
 
   for(let j = 0; j < nombreLigne; j++) {
-    variation = volume;
-    
+    variation = getRandomInt(30, 70);
     hauteur = hauteur + espaceLigne;
-    let ligneUnique = random() * 70;
-    //let ligneUnique = 0;
-
-    /*
-    beginShape();
-    vertex(x, y);
-    endShape();
-    */
-
+    let ligneUnique = random() * width;
     let boost = 0;
-    let ajout = variation * nbPoints / dureeTransition;
-    for (let x = - ligneUnique; x < width; x += nbPoints) {
+    let ajout = variation / dureeTransition;
+    for (let x = -width; x < width * 2; x++) {
       if (x > startChange - ligneUnique && x < endChange - ligneUnique) {
         boost = variation;
       }
@@ -113,8 +88,11 @@ function draw() {
   textAlign(CENTER);
   textFont(univers);
   fill(255);
-  textSize(width * 0.12);
-  text("JOY DIVISION", width / 2, margin);//m
-  textSize(width * 0.072);
+  textSize(120);
+  text("JOY DIVISION", width / 2, margin);
+  textSize(72);
   text("UNKNOWN PLEASURES", width / 2, height * 0.99);
+}
+
+function draw() {
 }
