@@ -25,14 +25,14 @@ function getRandomInt(min, max) {
   return Math.floor(min + Math.random() * max);
 }
 
-const nombreLigne = 20;
+const nombreLigne = 8;
 const longueur = 100;
-const dureeTransition = 80;
-const nbPoints = 3;
+const dureeTransition = 100;
+const nbPoints = 10;
 const noiseScale = 0.02;
-const boostSetup = 0;
+const boostSetup = 4;
 const strokeW = 2;
-const micPower = 1000;
+const micPower = 2000;
 
 let variation;
 let mic;
@@ -48,6 +48,7 @@ function setup() {
   createCanvas(500, 600); //width/2 = 512.55
   frameRate(60);
   background(0);
+  randomSeed(Date.now());
 
   mic = new p5.AudioIn();
   mic.start();
@@ -58,6 +59,7 @@ function draw() {
   volume = mic.getLevel() * micPower;
 
   let margin = 60;
+  let margin_sides = 60;
   let espaceLigne = (height - margin * 2) / (nombreLigne + 1);
   let startChange = (width / 2) - (longueur / 2);
   //let startChange = 100;
@@ -65,53 +67,60 @@ function draw() {
   let hauteur = margin * 1.4;
 
   for(let j = 0; j < nombreLigne; j++) {
-    variation = volume;
+    variation = 100;
+    let randomSeed = random() * 100;
     
     hauteur = hauteur + espaceLigne;
-    let ligneUnique = random() * 70;
-    //let ligneUnique = 0;
-
-    /*
-    beginShape();
-    vertex(x, y);
-    endShape();
-    */
+    //let ligneUnique = random() * 70;;
+    let ligneUnique = 0;
 
     let boost = 0;
     let ajout = variation * nbPoints / dureeTransition;
-    for (let x = - ligneUnique; x < width; x += nbPoints) {
-      if (x > startChange - ligneUnique && x < endChange - ligneUnique) {
+    stroke("white");
+    noFill();
+    beginShape(LINE_STRIP);
+    for (let x = margin_sides; x < width - margin_sides; x += nbPoints) {
+      if (x > startChange && x < endChange) {
         boost = variation;
       }
-      else if (x > startChange - ligneUnique - dureeTransition && x < startChange - ligneUnique) {
+      else if (x > startChange && x < startChange) {
         if (boost < variation) {
           boost = boost + ajout;
         }
       }
-      else if (x > endChange - ligneUnique && x < endChange - ligneUnique + dureeTransition) {
-        if (boost > boostSetup) {
+      else if (x > endChange && x < endChange) {
+        if (boost > variation) {
           boost = boost - ajout;
         }
       }
-      else if (x < startChange - ligneUnique - dureeTransition || x > endChange - ligneUnique + dureeTransition) {
+      else if (x < startChange || x >= endChange) {
         boost = boostSetup;
       }
-      let noiseVal = noise(x * noiseScale, noiseScale);
+      let noiseVal = noise(x * noiseScale, randomSeed * (j + 1) * noiseScale);
       let scale = -noiseVal * boost;
-      strokeWeight(strokeW);
+      let noiseVal2 = noise((x+1) * noiseScale, randomSeed * (j + 2) * noiseScale);
+      let scale2 = -noiseVal2 * boost;
+      
       stroke(255);
-      line(x + ligneUnique, hauteur + scale, x + ligneUnique, hauteur + scale + 2);
+      vertex(x, hauteur + scale);
+      
+      
+      /*strokeWeight(strokeW);
+      stroke(255);
+      line(x, hauteur + scale, x, hauteur + scale + 2);
       strokeWeight(strokeW);
       stroke(0);
-      line(x + ligneUnique, height, x + ligneUnique, hauteur + scale + 2);
+      line(x, height + scale, x, hauteur + scale + 2);*/
     }
+    endShape();
   }
-  fill(0);
+  /*fill(0);
   noStroke();
   rect(0, 0, width / 8, height);
-  rect(width, 0, -width / 8, height);
+  rect(width, 0, -width / 8, height);*/
   textAlign(CENTER);
   textFont(univers);
+  noStroke();
   fill(255);
   textSize(width * 0.12);
   text("JOY DIVISION", width / 2, margin);//m
