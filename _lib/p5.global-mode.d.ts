@@ -4401,7 +4401,7 @@ declare function noiseSeed(seed: number): void;
  *
  *   @param seed the seed value
  */
-declare function randomSeed(seed: number): void;
+declare function seed(seed: number): void;
 
 /**
  *   Return a random floating-point number. Takes 

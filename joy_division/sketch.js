@@ -20,110 +20,102 @@ Pour n allant de 0 à nombre_de_lignes
 Fin Pour
 */
 
-// FUNCTIONS //
-function getRandomInt(min, max) {
-  return Math.floor(min + Math.random() * max);
-}
-
-const nombreLigne = 8;
-const longueur = 100;
-const dureeTransition = 100;
-const nbPoints = 10;
+const lineCount = 20;
+const quality = 4; // positive int. the lower, the better, but the more performance heavy
 const noiseScale = 0.02;
-const boostSetup = 4;
-const strokeW = 2;
-const micPower = 2000;
+const strokeW = 3;
+const micPower = 1000;
 
-let variation;
+let waveMin = 4;
+let waveMax;
+let randomTweak;
 let mic;
-let volume;
 
 function preload() {
   univers = loadFont('Univers-light-normal.ttf');
 }
 
-
-
 function setup() {
-  createCanvas(500, 600); //width/2 = 512.55
-  frameRate(60);
-  background(0);
+  createCanvas(1000, 1200); //width/2 = 512.55
+  frameRate(24);
   randomSeed(Date.now());
 
   mic = new p5.AudioIn();
   mic.start();
 }
 
+const lineLength = 1000 / 6;
+const transitionTime = 1000 / 6;
+
 function draw() {
   background(0);
-  volume = mic.getLevel() * micPower;
+  
+  console.log(frameRate());
 
-  let margin = 60;
-  let margin_sides = 60;
-  let espaceLigne = (height - margin * 2) / (nombreLigne + 1);
-  let startChange = (width / 2) - (longueur / 2);
-  //let startChange = 100;
-  let endChange = (width / 2) + (longueur / 2);
-  let hauteur = margin * 1.4;
+  let margin = height / 10;
+  let marginSides = height / 10;
+  let lineDistance = (height - margin * 2) / (lineCount + 1);
+  let startChange = (width / 2) - (lineLength / 2);
+  let endChange = (width / 2) + (lineLength / 2);
+  let verticalShift = margin * 1.4;
+  let waveValue = 0;
 
-  for(let j = 0; j < nombreLigne; j++) {
-    variation = 100;
-    let randomSeed = random() * 100;
-    
-    hauteur = hauteur + espaceLigne;
-    //let ligneUnique = random() * 70;;
-    let ligneUnique = 0;
+  for(let j = 0; j < lineCount; j++) {
+    //waveMax = mic.getLevel() * micPower;
+    waveMax = 100;
+    randomTweak = random() * 100;
+    verticalShift = verticalShift + lineDistance;
+    let verticalShiftNoiseList = new Array();
+    let noiseValue = 0;
+    let verticalShiftNoise = 0;
 
-    let boost = 0;
-    let ajout = variation * nbPoints / dureeTransition;
-    stroke("white");
-    noFill();
-    beginShape(LINE_STRIP);
-    for (let x = margin_sides; x < width - margin_sides; x += nbPoints) {
+    stroke(255);
+    fill(0);
+    beginShape(TESS);
+    vertex(marginSides / 2, height * 1.1);
+    vertex(marginSides / 2, verticalShift);
+    let y = 0;
+    for (let x = marginSides; x < width - marginSides; x += quality) {
+      let adjust = waveMax * Math.sin(y * Math.PI * quality / transitionTime);
       if (x > startChange && x < endChange) {
-        boost = variation;
+        waveValue = max(waveMax, waveMin);
       }
-      else if (x > startChange && x < startChange) {
-        if (boost < variation) {
-          boost = boost + ajout;
+      else if (x > startChange - transitionTime && x < startChange) {
+        if (waveValue < waveMax) {
+          waveValue = waveValue + adjust;
+          y++;
         }
       }
-      else if (x > endChange && x < endChange) {
-        if (boost > variation) {
-          boost = boost - ajout;
+      else if (x > endChange && x <= endChange + transitionTime) {
+        if (waveValue > waveMin) {
+          waveValue = waveValue - adjust;
+          y--;
         }
       }
-      else if (x < startChange || x >= endChange) {
-        boost = boostSetup;
+      else if (x < startChange || x > endChange) {
+        waveValue = waveMin;
       }
-      let noiseVal = noise(x * noiseScale, randomSeed * (j + 1) * noiseScale);
-      let scale = -noiseVal * boost;
-      let noiseVal2 = noise((x+1) * noiseScale, randomSeed * (j + 2) * noiseScale);
-      let scale2 = -noiseVal2 * boost;
+      noiseValue = noise(x * noiseScale, randomTweak * (j + 1) * noiseScale);
+      verticalShiftNoise = - noiseValue * waveValue;
+      verticalShiftNoiseList.push(verticalShiftNoise);
       
       stroke(255);
-      vertex(x, hauteur + scale);
-      
-      
-      /*strokeWeight(strokeW);
-      stroke(255);
-      line(x, hauteur + scale, x, hauteur + scale + 2);
       strokeWeight(strokeW);
-      stroke(0);
-      line(x, height + scale, x, hauteur + scale + 2);*/
+      vertex(x, verticalShift + verticalShiftNoise);
     }
-    endShape();
+    vertex(width - marginSides / 2, verticalShift);
+    vertex(width - marginSides / 2, height * 1.1);
+    endShape(CLOSE);
   }
-  /*fill(0);
+  fill(0);
   noStroke();
-  rect(0, 0, width / 8, height);
-  rect(width, 0, -width / 8, height);*/
+  rect(0, 0, marginSides, height);
+  rect(width, 0, -marginSides, height);
   textAlign(CENTER);
   textFont(univers);
-  noStroke();
   fill(255);
   textSize(width * 0.12);
-  text("JOY DIVISION", width / 2, margin);//m
-  textSize(width * 0.072);
-  text("UNKNOWN PLEASURES", width / 2, height * 0.99);
+  text("JOY DIVISION", width / 2, height * 0.10);
+  textSize(width * 0.069);
+  text("UNKNOWN PLEASURES", width / 2, height * 0.98);
 }
