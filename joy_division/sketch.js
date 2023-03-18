@@ -46,7 +46,7 @@ const quality = 6; // the lower, the better, but the more performance heavy
 function draw() {
   background(0);
   
-  console.log(frameRate());
+  //console.log(frameRate());
 
   // FRAME RESET VALUES //
   let lineLength = width * 0.15;
@@ -63,6 +63,7 @@ function draw() {
   let verticalShift = margin * 1.4;
   let waveValue = 0;
   let noiseValue = 0;
+  let noiseValueSecond = 0;
   let verticalShiftNoise = 0;
 
   for(let j = 0; j < lineCount; j++) {
@@ -79,7 +80,7 @@ function draw() {
     fill(0);
     beginShape(TESS);
     vertex(marginSides / 2, height * 1.1);
-    vertex(marginSides / 2, verticalShift - waveMin);
+    vertex(marginSides / 2, verticalShift - waveMin * noiseValue * noiseValueSecond);
     let y = 0;
     for (let x = marginSides; x < width - marginSides; x += quality) {
       duringTransition = x >= startChange - transitionTime && x <= startChange
@@ -101,7 +102,7 @@ function draw() {
       strokeWeight(strokeWeightValue);
       vertex(x, verticalShift + verticalShiftNoise);
     }
-    vertex(width - marginSides / 2, verticalShift - waveMin);
+    vertex(width - marginSides / 2, verticalShift - waveMin * noiseValue * noiseValueSecond);
     vertex(width - marginSides / 2, height * 1.1);
     endShape(CLOSE);
   }
