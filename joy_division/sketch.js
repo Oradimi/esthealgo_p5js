@@ -1,25 +1,5 @@
 /// <reference path="../_lib/p5.global-mode.d.ts" />
 
-/* Pseudo-code rédigé
-Pour chaque ligne, et sur la longueur de la ligne,
-si x est proche du milieu, une dessine une somme de sin et cos de x, multipliée par une valeur haute.
-Sinon, on utilise du perlin noise utilisant du cos et du sin, multiplié par une valeur très basse.
-À la fin, on colore chaque dessous de ligne en noir.
-*/
-
-/* Pseudo-code
-Pour n allant de 0 à nombre_de_lignes
-    Pour x allant de 0 à largeur_de_feuille
-        Si x étant entre valeur aléatoire proche du milieu gauche
-        et valeur aléatoire proche du milieu droite
-            utilisation de perlin noise utilisant du cos et du sin, multiplié par une valeur haute
-        Sinon
-            utilisation de perlin noise utilisant du cos et du sin, multiplié par une valeur très basse
-    Fin Pour
-    Colorer le dessous de la ligne en noir
-Fin Pour
-*/
-
 // INITIAL SETUP //
 let mic;
 
