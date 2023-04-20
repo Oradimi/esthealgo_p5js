@@ -144,11 +144,11 @@ function draw() {
   background(20, 255);
   
   /* DISPLAY WORD COUNTS */
-  fill(255);
+  /*fill(255);
   textSize(24);
   text(swarmCount, 50, 25);
   text(swarmGoodCount, 150, 25);
-  text(swarmBadCount, 250, 25);
+  text(swarmBadCount, 250, 25);*/
 
   // Dessiner l'élément d'eau
   water.color = 20 + ((swarmCount / 10 + swarmGoodCount) / (1 + swarmCount / 10 + swarmBadCount)) * 70;

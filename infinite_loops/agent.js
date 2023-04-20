@@ -31,13 +31,12 @@ function Agent(xpos, ypos, xvel, yvel, type, color, health){
     this.health = health;
 
     let words;
-
-    const words_bad = ['AGW', 'gas', 'temperature', 'carbon', 'pollution', 'co2', 'emission', 'fossil', 'fuel', 'sea-level rise', 'methane', 'dioxid', 'oil', 'melt', 'cyclon', 'storm', 'hurrican', 'endanger', 'extinct', 'vehicl', 'car', 'flood', 'ratif', 'impact', 'acid', 'simul', 'GHG', 'diseas'];
-    const words_good = ['health', 'Earth', 'INDC','COP', 'UNFCCC', 'IPCC', 'mitigation', 'nuclear','renew','hydrogen', 'green', 'scheme', 'cultivar', 'phytoplankton','electric','adapt', 'consensus', 'alarmist', 'develop',  'recycle', 'conservation', 'EPA', 'CLF', 'EIA', 'RGGI', 'NHTSA', 'NAAQ', 'MGP', 'NDVI', 'USHCN', 'integrity']
-    const words_neutral = ['climate', 'USHCN', 'energ', 'science', 'weather',  'politics', 'PPM','warm', 'degre', 'cool', 'barrel','atmosphe', 'glacier', 'antarct', 'antarctica', 'mediev','environment', 'palaeo', 'turbin', 'wind', 'megawatt', 'reactor', 'coral', 'ozon', 'bear', 'polar', 'millenni', 'mercuri',  'cloud','treati', 'forest', 'species', 'calcif', 'VMT']
+    const words_bad = ['AGW', 'gas', 'temperature', 'carbon', 'pollution', 'co2', 'emission', 'fossil', 'fuel', 'sea-level rise', 'methane', 'dioxid', 'oil', 'melt', 'cyclon', 'storm', 'hurrican', 'endanger', 'extinct', 'vehicl', 'car', 'flood', 'ratif', 'impact', 'acid', 'simul', 'GHG', 'diseas', 'energ', 'weather', 'warm', 'cool', 'barrel', 'degre', 'turbin', 'wind', 'megawatt', 'reactor'];
+    const words_good = ['health', 'Earth', 'mitigation', 'nuclear', 'renew', 'hydrogen', 'green', 'scheme', 'cultivar', 'phytoplankton', 'electric', 'consensus', 'alarmist', 'develop', 'recycle', 'conservation', 'integrity', 'forest', 'bear', 'science', 'atmosphe', 'glacier', 'antarctica', 'species', 'antarct', 'environment', 'coral', 'ozon', 'polar', 'millenni', 'cloud'];
+    const words_actions = ['climate', 'USHCN', 'politics', 'PPM', 'mediev', 'palaeo', 'mercuri', 'treati', 'calcif', 'VMT', 'INDC', 'COP', 'UNFCCC', 'IPCC', 'adapt', 'EPA', 'CLF', 'EIA', 'RGGI', 'NHTSA', 'NAAQ', 'MGP', 'NDVI', 'USHCN'];
     switch (type) {
         case 0:
-            words = words_neutral;
+            words = words_actions;
             break;
         case 1:
             words = words_good;
