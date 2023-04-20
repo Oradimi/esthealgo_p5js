@@ -2,7 +2,7 @@ let walls;
 
 function Water(level){
     this.level = level;
-    this.height = 200;
+    this.height = 300;
     this.margin = 30;
     this.speed = 0;
     this.color = 90;
@@ -31,7 +31,6 @@ function Agent(xpos, ypos, xvel, yvel, type, color, health){
     this.health = health;
 
     let words;
-    let wordSize;
 
     const words_bad = ['AGW', 'gas', 'temperature', 'carbon', 'pollution', 'co2', 'emission', 'fossil', 'fuel', 'sea-level rise', 'methane', 'dioxid', 'oil', 'melt', 'cyclon', 'storm', 'hurrican', 'endanger', 'extinct', 'vehicl', 'car', 'flood', 'ratif', 'impact', 'acid', 'simul', 'GHG', 'diseas'];
     const words_good = ['health', 'Earth', 'INDC','COP', 'UNFCCC', 'IPCC', 'mitigation', 'nuclear','renew','hydrogen', 'green', 'scheme', 'cultivar', 'phytoplankton','electric','adapt', 'consensus', 'alarmist', 'develop',  'recycle', 'conservation', 'EPA', 'CLF', 'EIA', 'RGGI', 'NHTSA', 'NAAQ', 'MGP', 'NDVI', 'USHCN', 'integrity']
@@ -49,8 +48,10 @@ function Agent(xpos, ypos, xvel, yvel, type, color, health){
         default:
             break;
     }
-    const wordIndex = int(random(words.length));
-    const wordWidth = textWidth(words[wordIndex]);
+    this.wordIndex = int(random(words.length));
+    textFont(univers);
+    this.wordWidth = textWidth(words[this.wordIndex]);
+    this.wordSize = 24 * (300 + this.health) / 1000;
     //const wordHeight = textHeight(words[wordIndex]);
     var avoidRadius = 100;
     
@@ -58,8 +59,16 @@ function Agent(xpos, ypos, xvel, yvel, type, color, health){
         noStroke();
         //noFill();
         //fill(20);
-        //rectMode(RADIUS);
-        //rect(this.pos.x, this.pos.y - wordSize * 0.4, wordWidth * 0.5, - wordSize * 0.6); 
+
+        /* HITBOX DISPLAY */
+        /*rectMode(CORNERS);
+        fill(40);
+        rect(this.pos.x - this.wordWidth,
+            this.pos.y - this.wordSize * 0.8,
+            this.pos.x + this.wordWidth,
+            this.pos.y + this.wordSize * 0.2);*/
+
+        //rect(this.pos.x, this.pos.y - this.wordSize * 0.4, wordWidth * 0.5, - this.wordSize * 0.6); 
         //fill(255);
         //circle(this.pos.x, this.pos.y, 10);
         //strokeWeight(2);
@@ -67,21 +76,21 @@ function Agent(xpos, ypos, xvel, yvel, type, color, health){
         stroke(color);
         textAlign(CENTER);
         textFont(univers);
-        wordSize = 24 * (300 + this.health) / 1000;
-        textSize(wordSize);
-        text(words[wordIndex], this.pos.x, this.pos.y);
+        this.wordSize = 24 * (300 + this.health) / 1000;
+        textSize(this.wordSize);
+        text(words[this.wordIndex], this.pos.x, this.pos.y);
     }
     
     this.move = function(){
         this.pos.add(this.vel); // vector addition
         this.vel.mult(friction); // decelerate
         // wrap
-        if (this.pos.x > width + wordWidth) this.pos.x = - wordWidth;
+        if (this.pos.x > width + this.wordWidth) this.pos.x = - this.wordWidth;
         if (this.pos.y > height) {
             this.pos.y = height - 2;
             this.vel.y = - this.vel.y;
         };
-        if (this.pos.x < - wordWidth) this.pos.x = width + wordWidth;
+        if (this.pos.x < - this.wordWidth) this.pos.x = width + this.wordWidth;
         if (this.pos.y < water.level) {
             this.pos.y = water.level + 2;
             this.vel.y = - this.vel.y;
@@ -92,9 +101,9 @@ function Agent(xpos, ypos, xvel, yvel, type, color, health){
         //var avoidVec = createVector(); // vector to store avoidance force
         /*var thisRect = {
             x: this.pos.x,
-            y: this.pos.y + wordSize * 0.2,
+            y: this.pos.y + this.wordSize * 0.2,
             w: wordWidth,
-            h: - wordSize * 1.2
+            h: - this.wordSize * 1.2
         }; // rectangle of this agent*/
         
         var avoidVec = createVector(); // vector to store avoidance force 
@@ -108,33 +117,38 @@ function Agent(xpos, ypos, xvel, yvel, type, color, health){
                     avoidVec.add(pushVec); // add this push to the total avoidance 
                 }
             } else if (neighbour.type == 0) {
-                if (nd > avoidRadius){// ignore neighbours that are far away 
-                    var pushVec = p5.Vector.sub(neighbour.pos, this.pos); // repulsive push away from close neighbours
-                    pushVec.normalize(); // scale to 1
-                    avoidVec.add(pushVec); // add this push to the total avoidance 
+                if (nd > avoidRadius){
+                    var pushVec = p5.Vector.sub(neighbour.pos, this.pos);
+                    pushVec.normalize();
+                    avoidVec.add(pushVec);
                 }
             } else if (friend) {
-                if (nd > avoidRadius){// ignore neighbours that are far away 
-                    var pushVec = p5.Vector.sub(neighbour.pos, this.pos); // repulsive push away from close neighbours
-                    pushVec.normalize(); // scale to 1
-                    avoidVec.add(pushVec); // add this push to the total avoidance 
+                if (nd > avoidRadius * 3){ 
+                    var pushVec = p5.Vector.sub(neighbour.pos, this.pos);
+                    pushVec.normalize();
+                    avoidVec.add(pushVec);
                 }
                 if (nd < avoidRadius && nd > 0){// ignore neighbours that are far away
                     var pushVec = p5.Vector.sub(this.pos, neighbour.pos); // repulsive push away from close neighbours
                     pushVec.normalize(); // scale to 1
                     avoidVec.add(pushVec); // add this push to the total avoidance 
                 }
+                if (nd < avoidRadius / 3 && nd > 0){// ignore neighbours that are far away
+                    var pushVec = p5.Vector.sub(this.pos, neighbour.pos); // repulsive push away from close neighbours
+                    pushVec.normalize(); // scale to 1
+                    avoidVec.add(pushVec * 3); // add this push to the total avoidance 
+                }
+                if (nd < avoidRadius / 4 && nd > 0){// ignore neighbours that are far away
+                    this.health += - neighbour.health / 3000; // make it smaller
+                }
             } else {
-                if (nd < avoidRadius * 3 && nd > 0){// ignore neighbours that are far away
+                if (nd < avoidRadius && nd > 0){// ignore neighbours that are far away
                     var pushVec = p5.Vector.sub(this.pos, neighbour.pos); // repulsive push away from close neighbours
                     pushVec.normalize(); // scale to 1
                     avoidVec.add(pushVec); // add this push to the total avoidance 
                 }
                 if (nd < avoidRadius / 2 && nd > 0){// ignore neighbours that are far away
-                    this.health += - neighbour.health / 500;
-                    var pushVec = p5.Vector.sub(this.pos, neighbour.pos); // repulsive push away from close neighbours
-                    pushVec.normalize(); // scale to 1
-                    avoidVec.add(pushVec); // add this push to the total avoidance 
+                    this.health += - neighbour.health / 500; // make it smaller
                 }
             }
         }
