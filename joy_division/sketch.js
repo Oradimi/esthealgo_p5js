@@ -9,7 +9,7 @@ function preload() {
 
 function setup() {
   createCanvas(750, 900);
-  frameRate(24); // affects the maximum framerate
+  frameRate(0.5); // affects the maximum framerate
   randomSeed(Date.now());
 
   mic = new p5.AudioIn();
@@ -18,7 +18,7 @@ function setup() {
 
 // CONSTANT VALUES //
 const noiseScale = 0.01; // the higher, the more spiky it gets
-const micPower = 1000; // the higher, the more mic input influences the lines
+const micPower = 2000; // the higher, the more mic input influences the lines
 const lineCount = 80; // the more lines, the slower
 const strokeWeightValue = 3; // the higher, the thicker the lines gets
 const quality = 6; // the lower, the better, but the more performance heavy
