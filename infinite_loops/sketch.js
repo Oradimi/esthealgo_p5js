@@ -140,8 +140,10 @@ function mousePressed() {
 
 function draw() {
   let waterState = 255;
-  
   background(20, 255);
+  water.color = 20 + ((swarmCount / 10 + swarmGoodCount) / (1 + swarmCount / 10 + swarmBadCount)) * 70;
+  water.color = clamp(water.color, 20, 100);
+  background(0, 50, water.color, 100);
   
   /* DISPLAY WORD COUNTS */
   /*fill(255);
@@ -151,7 +153,7 @@ function draw() {
   text(swarmBadCount, 250, 25);*/
 
   // Dessiner l'élément d'eau
-  water.color = 20 + ((swarmCount / 10 + swarmGoodCount) / (1 + swarmCount / 10 + swarmBadCount)) * 70;
+  /*water.color = 20 + ((swarmCount / 10 + swarmGoodCount) / (1 + swarmCount / 10 + swarmBadCount)) * 70;
   water.color = clamp(water.color, 20, 100);
   fill(0, 50, water.color, 100);
   noStroke();
@@ -163,7 +165,7 @@ function draw() {
     vertex(x, y);
   }
   vertex(width, height);
-  endShape(CLOSE);
+  endShape(CLOSE);*/
 
   // Faire bouger les vagues
   water.waveOffset += water.waveSpeed;

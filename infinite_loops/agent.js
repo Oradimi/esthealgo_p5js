@@ -90,8 +90,8 @@ function Agent(xpos, ypos, xvel, yvel, type, color, health){
             this.vel.y = - this.vel.y;
         };
         if (this.pos.x < - this.wordWidth) this.pos.x = width + this.wordWidth;
-        if (this.pos.y < water.level) {
-            this.pos.y = water.level + 2;
+        if (this.pos.y < 0) {
+            this.pos.y = 0 + 2;
             this.vel.y = - this.vel.y;
         };
     }
