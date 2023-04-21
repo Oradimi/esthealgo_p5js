@@ -93,10 +93,10 @@ function mousePressed() {
         mouseY <= agent.pos.y + agent.wordSize * 0.4 && 
         mouseY >= agent.pos.y - agent.wordSize * 0.6)
       if (agentClicked) {
-        let type = getRandomInt(0, swarmCount);
-        if (type < swarmBadCount) {
+        let type = getRandomInt(0, swarmCount + 30);
+        if (type < 10 + swarmBadCount) {
           type = 1;
-        } else if (type < swarmBadCount + swarmGoodCount) {
+        } else if (type < 20 + swarmBadCount + swarmGoodCount) {
           type = 2;
         } else {
           type = 0;
